@@ -17,6 +17,7 @@ delete :: proc(pool: ^Dense_Pool($T, $N), index: int) {
 			return
 		}
 		if index >= pool.count {
+			log.error("Tried to index dense pool outside of its bounds.")
 			return
 		}
 	}
