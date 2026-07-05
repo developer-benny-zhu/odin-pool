@@ -1,4 +1,4 @@
-package src
+package dense_pool
 
 import "core:log"
 
