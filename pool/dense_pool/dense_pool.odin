@@ -1,5 +1,8 @@
 package src
 
+import "core:log"
+
+// Dense pool is not ZII for maximum performance.
 
 Dense_Pool :: struct($T: typeid, $N: int) {
 	elements: [N]T,
@@ -9,23 +12,27 @@ Dense_Pool :: struct($T: typeid, $N: int) {
 
 delete :: proc(pool: ^Dense_Pool($T, $N), index: int) {
 	when ODIN_DEBUG {
-		if index < 0 || index >= pool.count {
+		if index < 0 {
+			log.error("Tried to index dense pool with a negative index.")
+			return
+		}
+		if index >= pool.count {
 			return
 		}
 	}
 	last_index := pool.count - 1
 	pool.elements[index] = pool.elements[last_index]
-	pool.elements[last_index] = {}
 	pool.count -= 1
 }
 
 allocate :: proc(pool: ^Dense_Pool($T, $N)) -> ^T {
 	when ODIN_DEBUG {
 		if pool.count >= len(pool.elements) {
+			log.error("Cannot allocate anymore in the dense pool as it is already full.")
 			return nil
 		}
 	}
-    index := pool.count
+	index := pool.count
 	pool.count += 1
 	return &pool.elements[index]
 }
